@@ -50,6 +50,13 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/splash_logo.png
+    - assets/call_button.png
+    - assets/camera_button.png
+    - assets/email_button.png
+    - assets/favourite_button_selected.png
+    - assets/favourite_button.png
+    - assets/message_button.png
+    - assets/placeholder_photo.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

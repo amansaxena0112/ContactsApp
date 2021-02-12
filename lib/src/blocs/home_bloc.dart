@@ -61,9 +61,6 @@ class HomeBloc extends Object {
     "Y",
     "Z"
   ];
-  // GlobalKey<AutoCompleteTextFieldState<String>> key;
-  // GoogleMapController controller;
-  // List<String> suggestions = [];
   List<ContactModel> contactModels = [];
 
   TextEditingController locationController = TextEditingController();
@@ -71,26 +68,14 @@ class HomeBloc extends Object {
 
   BehaviorSubject<List<ContactModel>> _contactModelList =
       BehaviorSubject<List<ContactModel>>.seeded([]);
-  // BehaviorSubject<CarModel> _carModel = BehaviorSubject<CarModel>();
-  // BehaviorSubject<List<String>> _suggestion =
-  //     BehaviorSubject<List<String>>.seeded([]);
 
-  // Stream<CarModel> get carModel => _carModel.stream;
-  // CarModel get carModelValue => _carModel.stream.value;
-  // Function(CarModel) get updateCarModel => _carModel.sink.add;
   Stream<List<ContactModel>> get contactModelList => _contactModelList.stream;
   List<ContactModel> get contactModelListValue =>
       _contactModelList.stream.value;
   Function(List<ContactModel>) get updateContactModelList =>
       _contactModelList.sink.add;
-  // Stream<List<String>> get suggestionList => _suggestion.stream;
-  // List<String> get suggestionListValue => _suggestion.stream.value;
-  // Function(List<String>) get updateSuggestionList => _suggestion.sink.add;
 
   void dispose() {
-    // _carModel.close();
-    // _carModelList.close();
-    // _suggestion.close();
     _contactModelList.close();
   }
 
@@ -109,7 +94,6 @@ class HomeBloc extends Object {
           return false;
         } else if (response.statusCode == 200) {
           contactModels = [];
-          // Map<String, dynamic> responseBody = json.decode(response.body);
           List<dynamic> responseData = json.decode(response.body);
           print(responseData);
           responseData.forEach((data) {

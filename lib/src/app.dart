@@ -19,9 +19,10 @@ class ContactsApp extends StatelessWidget {
       onGenerateRoute: AppRoutes.routes,
       theme: new ThemeData(
         fontFamily: "MetropolisMedium",
-        primaryColor: Colors.blue[900],
-        // primaryTextTheme: TextTheme(headline1: TextStyle(color: Colors.white)),
-        primaryIconTheme: IconThemeData(color: Colors.white),
+        primaryColor: Colors.cyan,
+        primaryTextTheme:
+            TextTheme(headline1: TextStyle(color: Colors.tealAccent)),
+        primaryIconTheme: IconThemeData(color: Colors.tealAccent),
       ),
     );
   }
