@@ -2,6 +2,7 @@ import 'dart:core';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:contacts_app/src/models/contact_model.dart';
 import 'package:contacts_app/src/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -44,6 +45,19 @@ class NetworkUtil {
       //   'Content-Type': 'application/json',
       //   'Authorization': 'Bearer ${_commonUtil.user.accessToken}',
       // },
+    );
+  }
+
+  Future<http.Response> saveContact(ContactModel contact) {
+    print(getUri(Constants.CONTACTS));
+    print(json.encode(contact.toMap()));
+    return http.post(
+      getUri(Constants.CONTACTS),
+      // headers: {
+      //   'Content-Type': 'application/json',
+      //   'Authorization': 'Bearer ${_commonUtil.user.accessToken}',
+      // },
+      body: json.encode(contact.toMap()),
     );
   }
 }

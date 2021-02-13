@@ -5,9 +5,11 @@ import 'package:contacts_app/src/models/contact_model.dart';
 import 'package:contacts_app/src/utils/connectivity_util.dart';
 import 'package:contacts_app/src/utils/navigator_util.dart';
 import 'package:contacts_app/src/utils/network_util.dart';
+import 'package:contacts_app/src/utils/snackbar_util.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class HomeBloc extends Object {
   static final HomeBloc _homeBloc = HomeBloc._();
@@ -15,24 +17,14 @@ class HomeBloc extends Object {
   HomeBloc._() {
     _networkUtil = NetworkUtil();
     _connectivityUtil = ConnectivityUtil();
-    // _snackbarUtil = SnackbarUtil();
-    // _commonUtil = CommonUtil();
+    _snackbarUtil = SnackbarUtil();
     _navigatorUtil = NavigatorUtil();
-    // _prefsUtil = PrefsUtil();
-    // key = new GlobalKey();
-    // _notificationUtil = NotificationUtil();
-    // _fcmUtil = FcmUtil();
   }
 
-  String imagePath;
-  // UserModel _user;
-  // BookingModel _bookingModel;
   NetworkUtil _networkUtil;
   NavigatorUtil _navigatorUtil;
-  // CommonUtil _commonUtil;
   ConnectivityUtil _connectivityUtil;
-  // PrefsUtil _prefsUtil;
-  // SnackbarUtil _snackbarUtil;
+  SnackbarUtil _snackbarUtil;
   List<String> alphabet = [
     "A",
     "B",
@@ -65,6 +57,9 @@ class HomeBloc extends Object {
 
   TextEditingController locationController = TextEditingController();
   TextEditingController carController = TextEditingController();
+  final ItemScrollController itemScrollController = ItemScrollController();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
 
   BehaviorSubject<List<ContactModel>> _contactModelList =
       BehaviorSubject<List<ContactModel>>.seeded([]);
@@ -83,6 +78,18 @@ class HomeBloc extends Object {
     return true;
   }
 
+  void filterList(String searchWord) {
+    int index = contactModelListValue
+        .indexWhere((element) => element.firstName.startsWith(searchWord));
+    print(index);
+    if (index != -1) {
+      itemScrollController.scrollTo(
+          index: index,
+          duration: Duration(seconds: 1),
+          curve: Curves.easeInOutCubic);
+    }
+  }
+
   Future<bool> getContacts(BuildContext context) async {
     await _connectivityUtil.init();
     if (_connectivityUtil.isConnectionActive) {
@@ -90,7 +97,7 @@ class HomeBloc extends Object {
         http.Response response = await _networkUtil.getContacts();
         print(response.body);
         if (response.statusCode == 500) {
-          // _snackbarUtil.updateMessageSignup('Something went wrong!');
+          _snackbarUtil.updateMessageHome('Something went wrong!');
           return false;
         } else if (response.statusCode == 200) {
           contactModels = [];
@@ -106,25 +113,17 @@ class HomeBloc extends Object {
           _navigatorUtil.navigateAndPopScreen(context, '/home');
           return true;
         } else {
-          Map<dynamic, dynamic> responseMap = json.decode(response.body);
-          // if (responseMap['msg'] != null) {
-          //   _snackbarUtil
-          //       .updateMessageSignup(responseMap['message'].toString());
-          // } else {
-          //   _snackbarUtil.updateMessageSignup(
-          //       'Unable to reach our server. Check network connection');
-          // }
+          _snackbarUtil.updateMessageHome(response.body);
           return false;
         }
       } catch (ex, t) {
         print(ex);
         print(t);
-        // _snackbarUtil.updateMessageSignup(ex);
         return false;
       }
     } else {
-      // _snackbarUtil
-      //     .updateMessageSignup('No network available. Check your connection');
+      _snackbarUtil
+          .updateMessageHome('No network available. Check your connection');
       return false;
     }
   }

@@ -113,6 +113,7 @@ class DetailScreenBody extends StatelessWidget {
                                       selectedContactModel.favorite = false;
                                       detailBloc.updateContactModel(
                                           selectedContactModel);
+                                      detailBloc.updateContactLocally(false);
                                     },
                                     child: createButtons(
                                         'assets/favourite_button_selected.png',
@@ -123,6 +124,7 @@ class DetailScreenBody extends StatelessWidget {
                                       selectedContactModel.favorite = true;
                                       detailBloc.updateContactModel(
                                           selectedContactModel);
+                                      detailBloc.updateContactLocally(true);
                                     },
                                     child: createButtons(
                                         'assets/favourite_button.png',

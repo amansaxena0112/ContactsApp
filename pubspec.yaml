@@ -31,6 +31,13 @@ dependencies:
   http: ^0.12.0+2
   connectivity: ^2.0.2
   rxdart: ^0.23.1
+  scrollable_positioned_list: ^0.1.9
+  image_picker: ^0.6.5+1
+  device_info: ^0.4.2+2
+  path_provider: ^1.6.5
+  flutter_image_compress: ^0.6.3
+  flutter_permissions_helper: 
+    git: https://github.com/amansaxena0112/flutter_permissions_helper.git
 
 dev_dependencies:
   flutter_test:

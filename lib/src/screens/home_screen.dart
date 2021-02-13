@@ -3,7 +3,9 @@ import 'package:contacts_app/src/blocs/home_bloc.dart';
 import 'package:contacts_app/src/models/contact_model.dart';
 import 'package:contacts_app/src/providers/home_bloc_provider.dart';
 import 'package:contacts_app/src/utils/navigator_util.dart';
+import 'package:contacts_app/src/utils/snackbar_util.dart';
 import 'package:flutter/material.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -44,6 +46,8 @@ class _HomeScreenBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeBloc homeBloc = HomeBlocProvider.getHomeBloc(context);
+    SnackbarUtil _snackbarUtil = SnackbarUtil();
+    _snackbarUtil.buildContextHome = context;
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -52,12 +56,26 @@ class _HomeScreenBody extends StatelessWidget {
             builder: (BuildContext context,
                 AsyncSnapshot<List<ContactModel>> snapshot) {
               if (snapshot.hasData && snapshot.data.length > 0) {
-                return ListView.builder(
+                print('!!!!!!!!!!!!!!!');
+                print(snapshot.data.length);
+                return ScrollablePositionedList.builder(
+                  itemScrollController: homeBloc.itemScrollController,
+                  itemPositionsListener: homeBloc.itemPositionsListener,
                   itemCount: snapshot.data.length,
+                  // maxItemCount: snapshot.data.length - 1,
+                  // addAutomaticKeepAlives: false,
+                  // addRepaintBoundaries: false,
+                  // emptyItemBuilder: (context, index) {
+                  //   return Container();
+                  // },
+                  // minItemCount: 0,
+                  reverse: false,
                   itemBuilder: (BuildContext context, int index) {
+                    print(index);
                     return GestureDetector(
                       onTap: () {
                         DetailBloc().updateContactModel(snapshot.data[index]);
+                        DetailBloc().updateIndex(index);
                         NavigatorUtil().navigateToScreen(context, '/detail');
                       },
                       child: Row(
@@ -66,6 +84,7 @@ class _HomeScreenBody extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Card(
+                              key: ValueKey(index),
                               child: Padding(
                                 padding: const EdgeInsets.all(15.0),
                                 child: Row(
@@ -90,7 +109,7 @@ class _HomeScreenBody extends StatelessWidget {
                                       padding:
                                           const EdgeInsets.only(left: 20.0),
                                       child: Text(
-                                          '${snapshot.data[index].firstName}'),
+                                          '${snapshot.data[index].firstName} ${snapshot.data[index].lastName}'),
                                     ),
                                     Expanded(
                                       child: Container(),
@@ -122,13 +141,24 @@ class _HomeScreenBody extends StatelessWidget {
         Align(
           alignment: Alignment.centerRight,
           child: Container(
-            width: 20,
+            width: 30,
             color: Colors.white,
-            padding: const EdgeInsets.only(left: 5, top: 70),
+            padding: const EdgeInsets.only(left: 0, top: 70),
             child: ListView.builder(
               itemCount: homeBloc.alphabet.length,
               itemBuilder: (BuildContext context, int index) {
-                return Text(homeBloc.alphabet[index]);
+                return GestureDetector(
+                  onTap: () {
+                    homeBloc.filterList(homeBloc.alphabet[index]);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      homeBloc.alphabet[index],
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ),
+                );
               },
             ),
           ),
